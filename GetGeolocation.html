@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+   <meta charset="UTF-8">
+   <title>GetGeolocation</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // 監視識別ID
+                var watch_id = 0;
+                // ボタンにclickイベントのリスナーをセット
+                var button = document.querySelector('button');
+                button.addEventListener("click", function() {
+                    var position_options = {
+                        // 高精度を要求
+                        enableHighAccuracy: true,
+                        // 最大待ち時間(ミリ秒)
+                        timeout: 60000,
+                        // キャッシュ有効時間(ミリ秒)
+                        maximumAge: 0
+                    }
+                    if( watch_id > 0 ) {
+                        // リアルタイム監視を停止
+                        window.navigator.geolocation.clearWatch(watch_id);
+                        // 監視識別IDに0をセット
+                        watch_id = 0;
+                        // ボタン表記を変更
+                        button.textContent = " GetGeolocation Start ";
+                    } else {
+                        // リアルタイム監視を開始
+                        //watch_id = window.navigator.geolocation.watchPosition(successCallback);
+                        watch_id = window.navigator.geolocation.watchPosition(successCallback, failCallback, position_options);
+                        // ボタン表記を変更
+                        button.textContent = " GetGeolocation Stop ";
+                    };
+                }, false);
+            }, false);
+
+            // リアルタイム監視
+            function successCallback(position) {
+                // コンソールログコメントアウト
+                // console.log(position);
+                // 緯度
+                var glLatitude = position.coords.latitude;
+                document.querySelector('#latitude').textContent = glLatitude;
+                // 経度
+                var glLongitude = position.coords.longitude;
+                document.querySelector('#longitude').textContent = glLongitude;
+                // 緯度・経度の精度
+                var glAccuracy = position.coords.accuracy;
+                document.querySelector('#accuracy').textContent = glAccuracy;
+                // GPS 高度
+                var glAltitude = position.coords.altitude;
+                document.querySelector('#altitude').textContent = glAltitude;
+                // GPS 高度の精度
+                var glAltitudeAccuracy = position.coords.altitudeAccuracy;
+                document.querySelector('#altitudeAccuracy').textContent = glAltitudeAccuracy;
+                // 移動方向
+                var glHeading = position.coords.heading;
+                document.querySelector('#heading').textContent = glHeading;
+                // 移動速度
+                var glSpeed = position.coords.speed;
+                document.querySelector('#speed').textContent = glSpeed;
+                // タイムスタンプ
+                var date = position.timestamp;
+
+                if( typeof(date) == "number" ) {
+                    date = new Date(date);
+                }
+                document.querySelector('#timestamp').textContent = date.toString();
+                // サーバーサイドへPOST
+                $.ajax({
+                    type: "post",
+                    url: "ServerSide.php",
+                    data: {
+                        "date": date,
+                        "lat": glLatitude,
+                        "lon": glLongitude,
+                        "alt": glAltitude,
+                        "posacc": glAccuracy,
+                        "altacc": glAltitudeAccuracy,
+                        "head": glHeading,
+                        "speed": glSpeed
+                    },
+                    // TODO 以下の分岐処理は古いため要改修(バグの温床となりうる非推奨手法)
+                    // 通信が成功した場合
+                    success: function(data, dataType) {
+                        //alert(data); // サーバーサイドからの返答を表示させてみる
+                    },
+                    // 通信が失敗した場合
+                    error: function() {
+                        alert('NG');
+                    }
+                });
+            };
+
+            // 位置情報が取得できなかった場合
+            function failCallback(error) {
+                if (error.code == 1) alert('位置情報を取得する時に許可がない')
+                if (error.code == 2) alert('何らかのエラーが発生し位置情報が取得できなかった。')
+                if (error.code == 3) alert('タイムアウト制限時間内に位置情報が取得できなかった。')
+            }
+        </script>
+    </head>
+    <body>
+        <h1>GetGeolocation</h1>
+        <p><button type="button"> GetGeolocation Start </button></p>
+        <dl>
+            <dt>緯度</dt>
+            <dd id="latitude">-</dd>
+            
+            <dt>経度</dt>
+            <dd id="longitude">-</dd>
+
+            <dt>緯度・経度の精度</dt>
+            <dd id="accuracy">-</dd>
+
+            <dt>GPS 高度</dt>
+            <dd id="altitude">-</dd>
+
+            <dt>GPS 高度の精度</dt>
+            <dd id="altitudeAccuracy">-</dd>
+
+            <dt>移動方向</dt>
+            <dd id="heading">-</dd>
+
+            <dt>移動速度</dt>
+            <dd id="speed">-</dd>
+
+            <dt>タイムスタンプ</dt>
+            <dd id="timestamp">-</dd>
+        </dl>
+    </body>
+</html>
