@@ -17,12 +17,14 @@ $speed = $_POST['speed'];
  * geolocation -> nmcli -> /n
  */
 //  nmcli -t -f BSSID,SSID,CHAN,RATE,SIGNAL,SECURITY dev wifi >> nmcli_result.txt
+$cmd = "nmcli -t -f BSSID,SSID,CHAN,RATE,SIGNAL,SECURITY dev wifi >> position.csv";
 
 // csv保存
 $file = fopen("position.csv", "a");
 fwrite($file, "$date,$lat,$lon,$alt,$posacc,$altacc,$head,$speed");
 fwrite($file, "\n");
 fclose($file);
+exec($cmd);
 
 // TODO 返却内容/方法について要検討
 // フロントサイドへ返却
