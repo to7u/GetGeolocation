@@ -1,0 +1,41 @@
+※学習/研究用
+
+■使用用途
+Geolocation APIとnmcliコマンドを使用し、現在位置と周囲のWiFiを CSVへ保存する
+
+■実行環境
+・Virtualbox 6.1.34
+・Vagrant 2.2.19
+・Ubuntu 20.04
+・Apache 2.4.41
+・PHP 7.4.3
+
+■環境構築
+以下の環境構築が必要(詳細な手順は割愛)
+・vagrant環境にて実施
+・Apache、PHP導入を導入
+・SSL通信を設定する(自己証明書で可)
+・外付けWiFi子機を導入/認識設定を行うこと
+
+■使用方法
+・Apacheドキュメントルートへフォルダ配置
+・https://<ドメインまたは仮想環境IP>/GetGeolocation/GetGeolcation.html へアクセス
+・画面上startボタンを押下(情報取得開始)
+ドキュメントルート/GetGeolcation/position.csvへ結果が保存される
+・画面上stopボタンを押下(情報取得停止)
+
+※位置情報は移動を検知することで更新される
+
+■位置情報の取得が不調な場合の対応方針
+全く違う場所が現在位置として取得される場合がある
+以下を実施することで現状は改善している
+
+・iPhoneのプライバシー設定をリセット
+一般 > リセット > 位置情報とプライバシーをリセット
+・ブラウザの位置情報使用に関する設定クリア
+・PC、スマホ再起動
+
+■参考情報
+https://developer.mozilla.org/ja/docs/Web/API/Geolocation_API
+https://pro-broccoli.com/2022/01/03/javascript_position/
+https://wot.exp.jp/web/api/geoapi/wp.html
