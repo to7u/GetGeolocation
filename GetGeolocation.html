@@ -62,35 +62,35 @@
                 var glSpeed = position.coords.speed;
                 document.querySelector('#speed').textContent = glSpeed;
                 // タイムスタンプ
-                var date = position.timestamp;
-
-                if( typeof(date) == "number" ) {
-                    date = new Date(date);
+                var glDate = position.timestamp;
+                if( typeof(glDate) == "number" ) {
+                    glDate = new Date(glDate);
                 }
-                document.querySelector('#timestamp').textContent = date.toString();
-                // サーバーサイドへPOST
-                $.ajax({
-                    type: "post",
-                    url: "ServerSide.php",
-                    data: {
-                        "date": date,
-                        "lat": glLatitude,
-                        "lon": glLongitude,
-                        "alt": glAltitude,
-                        "posacc": glAccuracy,
-                        "altacc": glAltitudeAccuracy,
-                        "head": glHeading,
-                        "speed": glSpeed
-                    },
-                    // TODO 以下の分岐処理は古いため要改修(バグの温床となりうる非推奨手法)
-                    // 通信が成功した場合
-                    success: function(data, dataType) {
-                        //alert(data); // サーバーサイドからの返答を表示させてみる
-                    },
-                    // 通信が失敗した場合
-                    error: function() {
+                document.querySelector('#timestamp').textContent = glDate.toString();
+
+                //改修Ver
+                $(function(){
+                    $.ajax({
+                        type: "post",
+                        url: "ServerSide.php",
+                        data: {
+                            "date": glDate,
+                            "lat": glLatitude,
+                            "lon": glLongitude,
+                            "alt": glAltitude,
+                            "posacc": glAccuracy,
+                            "altacc": glAltitudeAccuracy,
+                            "head": glHeading,
+                            "speed": glSpeed
+                        }
+                    })
+                    .done(function(data, dataType){
+                        var glresult = data;
+                        document.querySelector('#phpResult').textContent = glresult;
+                    })
+                    .fail(function(){
                         alert('NG');
-                    }
+                    });
                 });
             };
 
@@ -106,29 +106,32 @@
         <h1>GetGeolocation</h1>
         <p><button type="button"> GetGeolocation Start </button></p>
         <dl>
-            <dt>緯度</dt>
+            <dt>latitude</dt>
             <dd id="latitude">-</dd>
             
-            <dt>経度</dt>
+            <dt>longitude</dt>
             <dd id="longitude">-</dd>
 
-            <dt>緯度・経度の精度</dt>
+            <dt>latitude/longitude accuracy</dt>
             <dd id="accuracy">-</dd>
 
-            <dt>GPS 高度</dt>
+            <dt>GPS altitude</dt>
             <dd id="altitude">-</dd>
 
-            <dt>GPS 高度の精度</dt>
+            <dt>GPS altitude accuracy</dt>
             <dd id="altitudeAccuracy">-</dd>
 
-            <dt>移動方向</dt>
+            <dt>heading</dt>
             <dd id="heading">-</dd>
 
-            <dt>移動速度</dt>
+            <dt>speed</dt>
             <dd id="speed">-</dd>
 
-            <dt>タイムスタンプ</dt>
+            <dt>timestamp</dt>
             <dd id="timestamp">-</dd>
+            
+            <dt>WiFi scan result</dt>
+            <dd id="phpResult">-</dd>
         </dl>
     </body>
 </html>
