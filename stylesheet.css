@@ -1,3 +1,29 @@
-section{
+.top_item {
     text-align: center;
 }
+
+dl {
+    width:50%;
+    margin:20px auto;
+    border-bottom:1px solid #999;
+    letter-spacing:-0.31em;
+    *letter-spacing:normal;
+    word-spacing:-0.43em;
+} 
+
+dt,dd {
+    display:inline-block;
+    *display:inline;
+   zoom:1;
+   letter-spacing:normal;
+   word-spacing:normal;
+   vertical-align:top;
+   width:46%;
+   padding:3px 2% 4px;
+   margin:0;
+   border-top:1px solid #999;
+}
+
+ dt {
+   margin-right:-1px;
+ }
